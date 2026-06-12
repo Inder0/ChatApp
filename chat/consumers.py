@@ -17,12 +17,21 @@ class ChatRoomConsumer(WebsocketConsumer):
             self.room_name,
             self.channel_name
         )
+        if self.user not in self.chatroom.users_online.all():
+            self.chatroom.users_online.add(self.user)
+            self.update_online_count()
+
         self.accept()
 
     def disconnect(self,close_code):
         async_to_sync(self.channel_layer.group_discard)(
             self.room_name,
             self.channel_name)
+        if self.user in self.chatroom.users_online.all():
+            self.chatroom.users_online.remove(self.user)
+            self.update_online_count()
+
+    
 
     def receive(self,text_data):
         message=json.loads(text_data)['body'].strip()
@@ -54,3 +63,17 @@ class ChatRoomConsumer(WebsocketConsumer):
                     {html}
                 </ul>
                 """)
+        
+    def update_online_count(self):
+        count=self.chatroom.users_online.count()-1
+        event={
+            'type':'online_count_handler',
+            'count':count
+        }
+        async_to_sync(self.channel_layer.group_send)(
+            self.room_name,event)
+        
+    def online_count_handler(self,event):
+        count=event['count']
+        html=render_to_string('chat/partials/online_count.html',{'count':count,'user':self.user})
+        self.send(text_data=html)

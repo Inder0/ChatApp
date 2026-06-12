@@ -6,7 +6,7 @@
     <div class="h-[45rem] flex flex-col bg-gray-800 card !p-2">
 
         <div class="sticky top-0 p-2 text-center text-emerald-400 bg-gray-800">
-            <span id="online-count">3</span> online
+            {% include 'chat/partials/online_count.html' %} online
         </div>
 
         <div id="chat_container" class="grow text-black overflow-y-auto">
