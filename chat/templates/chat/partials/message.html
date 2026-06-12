@@ -1,0 +1,28 @@
+{% if chat_message.author == user %}
+<li class="flex justify-end">
+    <div class="bg-green-200 p-4 rounded-lg max-w-[75%]">
+        {{ chat_message.body }}
+    </div>
+</li>
+{% else %}
+<li>
+    <div class="flex items-start gap-2">
+        <img
+            src="{{chat_message.author.profile.avatar}}"
+            class="w-8 h-8 rounded-full"
+            alt=""
+        >
+        <div class="flex-1">
+            <div class="bg-white p-4 rounded-lg max-w-[75%] text-black break-all">
+                {{ chat_message.body }}
+            </div>
+            <div class="text-sm mx-1 mt-1">
+                <span class="text-white">@{{ chat_message.author.username }}</span>
+            </div>
+            
+        </div>
+
+    </div>
+</li>
+
+{% endif %}

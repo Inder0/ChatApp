@@ -4,4 +4,6 @@ django-cleanup
 django-allauth
 django-htmx
 requests 
-jwt
+python-dotenv
+pyjwt
+django-widget-tweaks

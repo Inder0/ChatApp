@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="max-w-2xl mx-auto my-10 px-6">
+    <div class="h-[45rem] flex flex-col bg-gray-800 card !p-2">
+
+        <div class="sticky top-0 p-2 text-center text-emerald-400 bg-gray-800">
+            <span id="online-count">3</span> online
+        </div>
+
+        <div id="chat_container" class="grow text-black overflow-y-auto">
+            <ul id="chat_messages" class="p-4 flex flex-col space-y-3">
+                {% for chat_message in chat_messages reversed %}
+                    {% include "chat/partials/message.html" %}
+                {% empty %}
+                    <li class="text-center text-gray-400">
+                        No messages yet
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="p-2 bg-gray-800">
+            <form   id="chat_message_form"
+                    hx-ext="ws"
+                    ws-connect="/ws/chatroom/public-chat/"
+                    ws-send
+                    _="on htmx:wsAfterMessage call me.reset()"
+            >
+                {% csrf_token %}
+                {{ form }}
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+#chat_container::-webkit-scrollbar {
+    width: 6px;
+}
+
+#chat_container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#chat_container::-webkit-scrollbar-thumb {
+    background: #4b5563;
+    border-radius: 9999px;
+}
+
+#chat_container::-webkit-scrollbar-thumb:hover {
+    background: #6b7280;
+}
+</style>
+
+<script>
+    function scrollToBottom() {
+        const container = document.getElementById('chat_container');
+        container.scrollTop = container.scrollHeight;
+    }
+
+    scrollToBottom();
+
+    document.body.addEventListener(
+        'htmx:oobAfterSwap',
+        scrollToBottom
+    );
+</script>
+
+{% endblock %}
+
