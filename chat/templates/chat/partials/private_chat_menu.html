@@ -1,0 +1,29 @@
+<div class="fixed top-0 right-0 w-3/4 h-screen bg-gray-900 z-50 overflow-y-auto">
+    <div class="p-4">
+        <h2 class="flex text-xl font-bold mb-4">
+            Private Chats
+            <button class="p-2 ml-auto rounded-lg text-xs bg-red-600 hover:bg-red-700 text-white transition"
+                onclick="document.getElementById('slide-menu').innerHTML=''"
+            >
+            Close
+        </button>
+        </h2>
+        
+        <input
+            type="text"
+            name="q"
+            placeholder="Search chats..."
+            class="w-full p-2 rounded text-black"
+            hx-get="{% url 'chat-search' %}"
+            hx-trigger="keyup changed delay:300ms"
+            hx-target="#chat-results"
+            hx-swap="innerHTML"
+        >
+
+        <div id="chat-results" class="mt-4">
+            {% include 'chat/partials/chat_list_items.html' %}
+        </div>
+
+    </div>
+
+</div>

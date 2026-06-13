@@ -13,6 +13,9 @@ class ChatRoomConsumer(WebsocketConsumer):
             return
         self.room_name=self.scope['url_route']['kwargs']['chatroom_name']
         self.chatroom=get_object_or_404(ChatGroup,group_name=self.room_name)
+        if self.chatroom.is_private and self.user not in self.chatroom.members.all():
+            self.close()
+            return
         async_to_sync(self.channel_layer.group_add)(
             self.room_name,
             self.channel_name
@@ -42,6 +45,10 @@ class ChatRoomConsumer(WebsocketConsumer):
             author=self.user,
             body=message
         )
+        self.chatroom.save(
+            update_fields=['updated_at']
+        )
+
         event={
             'type':'message_handler',
             'message_id':message.id,

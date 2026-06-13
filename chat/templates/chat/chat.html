@@ -2,12 +2,29 @@
 
 {% block content %}
 
-<div class="max-w-2xl mx-auto my-10 px-6">
-    <div class="h-[45rem] flex flex-col bg-gray-800 card !p-2">
-
-        <div class="sticky top-0 p-2 text-center text-emerald-400 bg-gray-800">
-            {% include 'chat/partials/online_count.html' %} online
+<div class="max-w-2xl mx-auto my-10 px-1">
+    <div class="h-[45rem]  flex flex-col bg-gray-800 card !p-2">
+        {% if other_user %}
+            <div class="">
+            <a href="{% url 'profile-detail' other_user.username %}" class="flex items-center gap-2 p-4 sticky top-0 z-10 hover:bg-gray-800">
+                <img class="w-10 h-10 rounded-full object-cover" src="{{ other_user.profile.avatar }}">
+                <div class="flex  flex-col">
+                    <span class="font-bold flex text-white">{{ other_user.profile.name }}
+                        <div class=" top-3 right-3 absolute flex justify-end  text-center text-emerald-400 bg-gray-800">
+                            {% include 'chat/partials/online_count.html' %}
+                        </div>
+                    </span>
+                    <span class="text-sm font-light text-gray-400">@{{ other_user.username }}</span>
+                    
+                </div>
+            </a>
+            </div>
+        {% else %}
+        <div class="sticky top-0 p-1.5 text-center text-emerald-400 bg-gray-800">
+            {% include 'chat/partials/online_count.html' %} 
         </div>
+        {% endif %}
+        
 
         <div id="chat_container" class="grow text-black overflow-y-auto">
             <ul id="chat_messages" class="p-4 flex flex-col space-y-3">
@@ -24,7 +41,7 @@
         <div class="p-2 bg-gray-800">
             <form   id="chat_message_form"
                     hx-ext="ws"
-                    ws-connect="/ws/chatroom/public-chat/"
+                    ws-connect="/ws/chatroom/{{ group.group_name }}/"
                     ws-send
                     _="on htmx:wsAfterMessage call me.reset()"
             >

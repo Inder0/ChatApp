@@ -1,17 +1,19 @@
 {% if chat_message.author == user %}
 <li class="flex justify-end">
-    <div class="bg-green-200 p-4 rounded-lg max-w-[75%]">
+    <div class="bg-green-200 p-4 rounded-lg max-w-[75%] break-all">
         {{ chat_message.body }}
     </div>
 </li>
 {% else %}
 <li>
     <div class="flex items-start gap-2">
+        <a href="{% url 'profile-detail' chat_message.author.username %}">
         <img
             src="{{chat_message.author.profile.avatar}}"
-            class="w-8 h-8 rounded-full"
+            class="w-8 h-8 rounded-2xl"
             alt=""
         >
+        </a>
         <div class="flex-1">
             <div class="bg-white p-4 rounded-lg max-w-[75%] text-black break-all">
                 {{ chat_message.body }}
@@ -21,7 +23,6 @@
             </div>
             
         </div>
-
     </div>
 </li>
 

@@ -30,7 +30,7 @@
 
 
         .navitems{
-            @apply flex items-center gap-4;
+            @apply items-center gap-1;
         }
 
         .navlink{
@@ -102,14 +102,13 @@
 
     <nav class="bg-slate-800 border-b border-slate-700">
         <div class="main-container">
-
             <div class="flex justify-between items-center h-16">
 
                 <a href="/" class="text-xl font-bold text-white">
-                    Chat App
+                    ChatApp
                 </a>
 
-                <div class="navitems">
+                <div class="hidden md:flex navitems">
 
                     {% if user.is_authenticated %}
 
@@ -124,6 +123,10 @@
                         <a href="{% url 'account_logout' %}" onclick="return confirm('Are you sure you want to logout?')" class="button-secondary">
                             Logout
                         </a>
+                        <button hx-get="{% url 'private-chat-menu' %}" class="navlink" hx-target="#slide-menu" hx-swap="innerHTML">
+                            Chats
+                        </button>
+
 
                     {% else %}
 
@@ -135,9 +138,53 @@
                     {% endif %}
 
                 </div>
+                
+                <button
+                    class="md:hidden text-white text-2xl"
+                    onclick="document.getElementById('mobile-menu').classList.toggle('hidden')"
+                >
+                    ☰
+                </button>
 
             </div>
+            <div
+                id="mobile-menu"
+                class="hidden md:hidden pb-4"
+            >
+                {% if user.is_authenticated %}
 
+                    <a href="{% url 'home' %}" class="block navlink">
+                        Home
+                    </a>
+
+                    <a href="{% url 'profile' %}" class="block navlink">
+                        Profile
+                    </a>
+
+                    <button
+                        hx-get="{% url 'private-chat-menu' %}"
+                        hx-target="#slide-menu"
+                        hx-swap="innerHTML"
+                        class="block navlink w-full text-left"
+                    >
+                        Chats
+                    </button>
+
+                    <a
+                        href="{% url 'account_logout' %}"
+                        class="block navlink"
+                    >
+                        Logout
+                    </a>
+
+                {% else %}
+
+                    <a href="{% url 'account_login' %}" class="block navlink">
+                        Login
+                    </a>
+
+                {% endif %}
+            </div>
         </div>
     </nav>
 
@@ -173,16 +220,10 @@
 
     <footer class="border-t border-slate-700 bg-slate-800 py-6 mt-12">
 
-        <div class="main-container text-center text-slate-400">
-
-            © {% now "Y" %} Chat App
-
-        </div>
-
     </footer>
 
     {% block scripts %}
     {% endblock %}
-
+    <div id="slide-menu"></div>
 </body>
 </html>

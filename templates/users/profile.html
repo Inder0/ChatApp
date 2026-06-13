@@ -10,6 +10,11 @@
         {% if profile.info %}
         <div class="py-3">{{ profile.info|linebreaksbr }}</div>
         {% endif %}
+        {% if request.user != profile.user %}
+        <div class="space-x-3 mt-4">
+            <a class="button" href="{% url 'start-chat' profile.user.username %}">Chat with me</a>
+        </div>
+        {% endif %}
         {% if request.user == profile.user %}
         <div class="space-x-3 mt-4">
         <button
@@ -24,6 +29,7 @@
         </a>
 
         </div>
+        
         
         <div id="edit-profile-container"></div> 
         </div>
