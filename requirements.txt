@@ -13,3 +13,4 @@ channels
 channels-redis
 psycopg
 whitenoise
+shortuuid
