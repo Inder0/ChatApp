@@ -12,3 +12,27 @@ class ChatMessageForm(ModelForm):
         labels={
             'body':'',
         }
+
+class GroupChatForm(ModelForm):
+    class Meta:
+        model = ChatGroup
+        fields = ['title','is_protected','password']
+        widgets = {
+            'title': forms.TextInput(attrs={
+                'class': 'form-input',
+                'placeholder': 'Group Name',
+                'autofocus': True
+            }),
+            'is_protected': forms.CheckboxInput(attrs={
+                'class': 'h-4 w-4'
+            }),
+
+            'password': forms.PasswordInput(attrs={
+                'class': 'form-input',
+                'placeholder': 'Password'
+            })
+        }
+        labels = {
+            'title': '',
+            'password': '',
+        }

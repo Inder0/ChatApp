@@ -1,0 +1,44 @@
+{% if groups %}
+    <div class="space-y-3">
+        {% for group in groups %}
+            <div class="bg-slate-900 rounded-lg p-4 border border-slate-700">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h3 class="font-semibold text-white">
+                            {{ group.title }}
+                            {% if group.is_protected %}
+                                🔒
+                            {% endif %}
+                        </h3>
+                        {% if request.user in group.members.all %}
+                            <span class="text-green-400 text-xs">
+                                Joined
+                            </span>
+                        {% else %}
+                            <span class="text-red-400 text-xs">
+                                Not Joined
+                            </span>
+                        {% endif %}
+
+                        <p class="text-sm text-slate-400">
+                            {{ group.members.count }}
+                            member{{ group.members.count|pluralize }}
+                        </p>
+                    </div>
+                    <a href="{% url 'chatroom' group.group_name %}" class="button-secondary">
+                        Open
+                    </a>
+                </div>
+
+            </div>
+
+        {% endfor %}
+
+    </div>
+{% else %}
+
+    <p class="text-muted">
+        No groups found.
+    </p>
+
+{% endif %}

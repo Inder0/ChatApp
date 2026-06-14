@@ -119,13 +119,15 @@
                         <a href="{% url 'profile' %}" class="navlink">
                             Profile
                         </a>
+                        
 
-                        <a href="{% url 'account_logout' %}" onclick="return confirm('Are you sure you want to logout?')" class="button-secondary">
-                            Logout
-                        </a>
+                        
                         <button hx-get="{% url 'private-chat-menu' %}" class="navlink" hx-target="#slide-menu" hx-swap="innerHTML">
                             Chats
                         </button>
+                        <a href="{% url 'account_logout' %}" onclick="return confirm('Are you sure you want to logout?')" class="button-secondary">
+                            Logout
+                        </a>
 
 
                     {% else %}

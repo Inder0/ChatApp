@@ -11,9 +11,10 @@ class ChatGroup(models.Model):
     members=models.ManyToManyField(User,related_name='chat_groups',blank=True)
     is_private=models.BooleanField(default=False)
     updated_at=models.DateTimeField(auto_now=True)
-
-
-
+    title=models.CharField(max_length=100,blank=True,null=True)
+    admin=models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=True,related_name='owned_groups')
+    is_protected=models.BooleanField(default=False)
+    password=models.CharField(max_length=255,blank=True)
 
     def __str__(self):
         return self.group_name

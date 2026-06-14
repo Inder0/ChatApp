@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card max-w-md mx-auto">
+    <h1 class="heading-2 mb-4">
+        Create Group
+    </h1>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="mb-4">
+            {{ form.title }}
+        </div>
+        <div class="mb-4 flex items-center gap-2">
+            {{ form.is_protected }}
+            <label for="{{ form.is_protected.id_for_label }}">
+                Password Protected Group
+            </label>
+        </div>
+        <div id="password-field" class="mb-4">
+            {{ form.password }}
+        </div>
+        <button class="button mt-4">
+            Create
+        </button>
+    </form>
+</div>
+
+<script>
+    const checkbox = document.getElementById('id_is_protected');
+    const password = document.getElementById('id_password');
+
+    function togglePassword() {
+        password.disabled = !checkbox.checked;
+    }
+
+    togglePassword();
+    checkbox.addEventListener('change', togglePassword);
+</script>
+{% endblock %}

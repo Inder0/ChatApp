@@ -13,9 +13,12 @@ class ChatRoomConsumer(WebsocketConsumer):
             return
         self.room_name=self.scope['url_route']['kwargs']['chatroom_name']
         self.chatroom=get_object_or_404(ChatGroup,group_name=self.room_name)
-        if self.chatroom.is_private and self.user not in self.chatroom.members.all():
-            self.close()
-            return
+        if self.user not in self.chatroom.members.all():
+            if self.chatroom.is_private:
+                self.close()
+                return
+            else:
+                self.chatroom.members.add(self.user)
         async_to_sync(self.channel_layer.group_add)(
             self.room_name,
             self.channel_name

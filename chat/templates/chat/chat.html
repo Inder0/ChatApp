@@ -9,7 +9,8 @@
             <a href="{% url 'profile-detail' other_user.username %}" class="flex items-center gap-2 p-4 sticky top-0 z-10 hover:bg-gray-800">
                 <img class="w-10 h-10 rounded-full object-cover" src="{{ other_user.profile.avatar }}">
                 <div class="flex  flex-col">
-                    <span class="font-bold flex text-white">{{ other_user.profile.name }}
+
+                    <span class="font-bold flex text-white">{{ other_user.profile.displayname }}
                         <div class=" top-3 right-3 absolute flex justify-end  text-center text-emerald-400 bg-gray-800">
                             {% include 'chat/partials/online_count.html' %}
                         </div>
@@ -20,12 +21,23 @@
             </a>
             </div>
         {% else %}
-        <div class="sticky top-0 p-1.5 text-center text-emerald-400 bg-gray-800">
-            {% include 'chat/partials/online_count.html' %} 
-        </div>
-        {% endif %}
-        
+            <div class="sticky top-0 bg-gray-800 p-4">
+                <div class="font-bold text-white">
+                    {% if group.title %}
+                        {{ group.title }}
+                    {% else %}
+                        Public Chat
+                    {% endif %}
+                </div>
+                <div class="text-sm text-gray-400">
+                    {{ group.members.count }} member{{ group.members.count|pluralize }}
+                </div>
+                <div class="text-emerald-400">
+                    {% include 'chat/partials/online_count.html' %}
+                </div>
 
+            </div>
+            {% endif %}
         <div id="chat_container" class="grow text-black overflow-y-auto">
             <ul id="chat_messages" class="p-4 flex flex-col space-y-3">
                 {% for chat_message in chat_messages reversed %}
@@ -49,6 +61,28 @@
                 {{ form }}
             </form>
         </div>
+        {% if not group.is_private and group.group_name != 'public-chat' %}
+            {% if request.user == group.admin %}
+            <div class="my-4 ml-auto  text-center">
+                <a
+                    href="{% url 'leave-group' group.group_name %}"
+                    class="button-danger"
+                    onclick="return confirm('Delete this group?')"
+                >
+                    Delete Group
+                </a>
+            {% else %}
+            <div class="my-4 ml-auto  text-center">
+                <a
+                    href="{% url 'leave-group' group.group_name %}"
+                    class="button-danger"
+                    onclick="return confirm('Leave group?')"
+                >
+                    Leave Group
+                </a>
+            {% endif %}
+            </div>
+        {% endif %}
     </div>
 </div>
 
