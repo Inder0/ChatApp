@@ -89,7 +89,7 @@ TEMPLATES = [
         },
     },
 ]
-REDIS=os.getenv("REDIS")
+REDIS=os.getenv("REDIS","False")=="True""
 # WSGI_APPLICATION = 'core.wsgi.application'
 ASGI_APPLICATION = 'core.asgi.application'
 if DEBUG==True or REDIS==True:
