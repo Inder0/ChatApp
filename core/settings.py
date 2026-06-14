@@ -89,10 +89,10 @@ TEMPLATES = [
         },
     },
 ]
-
+REDIS=os.getenv("REDIS")
 # WSGI_APPLICATION = 'core.wsgi.application'
 ASGI_APPLICATION = 'core.asgi.application'
-if DEBUG==True:
+if DEBUG==True or REDIS==True:
     CHANNEL_LAYERS = {
         "default": {
             "BACKEND": "channels.layers.InMemoryChannelLayer"
