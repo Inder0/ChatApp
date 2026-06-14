@@ -89,10 +89,11 @@ TEMPLATES = [
         },
     },
 ]
-REDIS=os.getenv("REDIS","False")=="True""
+USE_INMEMORY=os.getenv("REDIS","False")=="True"
 # WSGI_APPLICATION = 'core.wsgi.application'
 ASGI_APPLICATION = 'core.asgi.application'
-if DEBUG==True or REDIS==True:
+
+if DEBUG==True or USE_INMEMORY==True:
     CHANNEL_LAYERS = {
         "default": {
             "BACKEND": "channels.layers.InMemoryChannelLayer"
