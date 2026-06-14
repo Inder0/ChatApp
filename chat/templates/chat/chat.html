@@ -39,6 +39,19 @@
             </div>
             {% endif %}
         <div id="chat_container" class="grow text-black overflow-y-auto">
+            <div class="text-center mb-4">
+                {% if has_more_messages %}
+                <button
+                    id="load-more-button"
+                    hx-get="{% url 'load-messages' group.group_name %}"
+                    hx-target="this"
+                    hx-swap="outerHTML"
+                    class="text-blue-400 text-sm"
+                >
+                    Load Older Messages
+                </button>
+                {% endif %}
+            </div>
             <ul id="chat_messages" class="p-4 flex flex-col space-y-3">
                 {% for chat_message in chat_messages reversed %}
                     {% include "chat/partials/message.html" %}

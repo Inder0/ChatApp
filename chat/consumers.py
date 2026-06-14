@@ -13,6 +13,11 @@ class ChatRoomConsumer(WebsocketConsumer):
             return
         self.room_name=self.scope['url_route']['kwargs']['chatroom_name']
         self.chatroom=get_object_or_404(ChatGroup,group_name=self.room_name)
+        if self.chatroom.is_protected:
+            has_access=self.scope['session'].get(f'group_access_{self.chatroom.id}')
+            if not has_access:
+                self.close()
+                return
         if self.user not in self.chatroom.members.all():
             if self.chatroom.is_private:
                 self.close()

@@ -7,6 +7,8 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.http import Http404
 from django.contrib.auth.hashers import make_password,check_password
+from django.utils import timezone
+from datetime import datetime
 
 # Create your views here.
 
@@ -21,11 +23,13 @@ def home(request):
 @login_required
 def chat_view(request,chatroom_name='public-chat'):
     group=get_object_or_404(ChatGroup,group_name=chatroom_name)
+    request.session[f'chat_{group.id}_last_seen'] = timezone.now().isoformat()
     if group.is_protected:
         has_access = request.session.get(f'group_access_{group.id}')
         if not has_access:
             return redirect('verify-group-password',chatroom_name=group.group_name)
     chat_messages=group.messages.all()[:30]
+    has_more_messages=group.messages.count()>30
     form=ChatMessageForm()
     other_user=None
     group_members=None
@@ -48,13 +52,13 @@ def chat_view(request,chatroom_name='public-chat'):
     
             return render(request,'chat/partials/message.html',{'chat_message':message,})
 
-    return render(request, 'chat/chat.html',{'chat_messages':chat_messages,'form':form,'group':group,'other_user':other_user,'group_members':group_members})
+    return render(request, 'chat/chat.html',{'chat_messages':chat_messages,'form':form,'group':group,'other_user':other_user,'group_members':group_members,'has_more_messages':has_more_messages})
 
 @login_required
 def get_or_create_chatroom(request,username):
     if request.user.username==username:
         return redirect('home')
-    user=User.objects.get(username=username)
+    user=get_object_or_404(User,username=username)
     private_chats=request.user.chat_groups.filter(is_private=True)
     for chat in private_chats:
         if user in chat.members.all():
@@ -68,9 +72,21 @@ def get_or_create_chatroom(request,username):
 
 @login_required
 def private_chats_menu(request):
-    chats=request.user.chat_groups.filter(is_private=True).prefetch_related('members').order_by('-updated_at')
-    context = {'chats': chats}
-    return render(request, 'chat/partials/private_chat_menu.html', context)
+    chats=request.user.chat_groups.filter(is_private=True).prefetch_related('members','messages').order_by('-updated_at')
+    chat_data=[]
+    for chat in chats:
+        latest_message=chat.messages.first()
+        last_seen=request.session.get(f'chat_{chat.id}_last_seen')
+        if last_seen:
+            last_seen=datetime.fromisoformat(last_seen)
+            has_new_messages=(chat.updated_at>last_seen) and latest_message and latest_message.author!=request.user
+        else:
+            has_new_messages=latest_message and latest_message.author!=request.user
+        chat_data.append({
+            'chat':chat,
+            'has_new_messages':has_new_messages
+        })
+    return render(request, 'chat/partials/private_chat_menu.html', {'chat_data':chat_data})
 
 @login_required
 def search_private_chats(request):
@@ -142,3 +158,12 @@ def verify_password(request,chatroom_name):
             messages.error(request,'Incorrect Password')
             return redirect('verify-group-password',chatroom_name=group.group_name)
     return render(request,'chat/partials/verify_password.html',{'group':group})
+
+@login_required
+def load_messages(request,chatroom_name):
+    group=get_object_or_404(ChatGroup,group_name=chatroom_name)
+    offset=int(request.GET.get('offset',30))
+    messages=group.messages.all()[offset:offset+30]
+    return render(request,'chat/partials/load_messages.html',{'messages':messages,'offset':offset,'next_offset':offset+30,'group':group})
+
+

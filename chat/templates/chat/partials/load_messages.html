@@ -1,0 +1,22 @@
+{% if messages %}
+<ul id="chat_messages" hx-swap-oob="afterbegin">
+    {% for chat_message in messages reversed %}
+        {% include 'chat/partials/message.html' %}
+    {% endfor %}
+</ul>
+<button
+    id="load-more-button"
+    hx-get="{% url 'load-messages' group.group_name %}?offset={{ next_offset }}"
+    hx-target="this"
+    hx-swap="outerHTML"
+    class="text-blue-400 text-sm"
+>
+    Load Older Messages
+</button>
+
+{% else %}
+<div id="load-more-button"
+     class="text-gray-400 text-sm text-center">
+    No more messages
+</div>
+{% endif %}

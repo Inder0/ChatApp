@@ -11,4 +11,6 @@ urlpatterns = [
     path('group/search/',search_group_chat,name='group-search'),
     path('group/leave/<str:chatroom_name>/',leave_group,name='leave-group'),
     path('group/verify-password/<str:chatroom_name>/',verify_password,name='verify-group-password'),
+    path('group/messages/<str:chatroom_name>/',load_messages,name='load-messages'),
+
 ]

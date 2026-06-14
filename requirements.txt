@@ -7,3 +7,9 @@ requests
 python-dotenv
 pyjwt
 django-widget-tweaks
+dj_database_url
+daphne
+channels
+channels-redis
+psycopg
+whitenoise
