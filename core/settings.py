@@ -89,7 +89,7 @@ TEMPLATES = [
         },
     },
 ]
-USE_INMEMORY=os.getenv("REDIS","False")=="True"
+USE_INMEMORY=os.getenv("USE_INMEMORY","False")=="True"
 # WSGI_APPLICATION = 'core.wsgi.application'
 ASGI_APPLICATION = 'core.asgi.application'
 
